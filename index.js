@@ -14,7 +14,7 @@ app.get("/testies", (req, res) => {
 	res.json([{ piw: "piw" }, { piw: "piw" }]);
 });
 
-app.get("/esp", (req, res) => {
+app.post("/esp", (req, res) => {
 	res.status(200);
 	res.send(req.body);
 });
