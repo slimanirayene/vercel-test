@@ -14,6 +14,11 @@ app.get("/testies", (req, res) => {
 	res.json([{ piw: "piw" }, { piw: "piw" }]);
 });
 
+app.get("/esp", (req, res) => {
+	res.status(200);
+	res.send(req.body);
+});
+
 // mongoose
 // 	.connect(
 // 		"mongodb+srv://slimanirayene:0000@pitchecluster.qost1.mongodb.net/Ouedkniss?retryWrites=true&w=majority"
