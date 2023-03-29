@@ -16,7 +16,7 @@ app.get("/testies", (req, res) => {
 
 app.post("/esp", (req, res) => {
 	res.status(200);
-	res.send(req.body);
+	res.send("pitche loves you so much !!");
 });
 
 // mongoose
