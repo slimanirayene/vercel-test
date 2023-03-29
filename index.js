@@ -9,7 +9,10 @@ app.use(bodyParser());
 app.use(cors());
 
 app.post("/test", (req, res) => console.log(req.body));
-app.get("/testies", (req, res) => console.log(req.body));
+app.get("/testies", (req, res) => {
+	res.status(200);
+	res.json([{ piw: "piw" }, { piw: "piw" }]);
+});
 
 // mongoose
 // 	.connect(
