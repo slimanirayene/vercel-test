@@ -8,6 +8,12 @@ var app = express();
 app.use(bodyParser());
 app.use(cors());
 
+const Data = mongoose.model("data", {
+	Nom: String,
+	Prenom: String,
+	date: String,
+});
+
 let check = false;
 
 app.post("/test", (req, res) => console.log(req.body));
@@ -26,6 +32,25 @@ app.get("/testies", (req, res) => {
 app.post("/esp", (req, res) => {
 	res.status(200);
 	res.send("pitche loves you so much !!");
+});
+
+app.post("/log", async (req, resp) => {
+	let firstName = "test name";
+	let lastName = "test last name";
+	let date = "test date";
+
+	try {
+		const doc = new Etudiant({
+			Nom: firstName,
+			Prenom: lastName,
+			date: date,
+		});
+		await doc.save();
+		resp.status(200).json({ status: "OK" });
+	} catch (err) {
+		resp.status(300).json({ status: "Not OK" });
+		console.log(err);
+	}
 });
 
 mongoose
