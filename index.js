@@ -19,7 +19,7 @@ app.get("/testies", (req, res) => {
 	} else {
 		check = true;
 		res.status(200);
-		res.json([{ piw: "piw" }, { piw: "piw" }]);
+		res.json([{ piw: "diw" }, { piw: "diw" }]);
 	}
 });
 
