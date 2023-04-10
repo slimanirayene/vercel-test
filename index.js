@@ -15,6 +15,7 @@ const Data = mongoose.model("data", {
 });
 
 let check = false;
+let count = 0;
 
 app.post("/test", (req, res) => console.log(req.body));
 app.get("/testies", (req, res) => {
@@ -35,9 +36,9 @@ app.post("/esp", (req, res) => {
 });
 
 app.post("/log", async (req, resp) => {
-	let firstName = "test name";
-	let lastName = "test last name";
-	let date = "test date";
+	let firstName = `test name ${count}`;
+	let lastName = `test last name ${count}`;
+	let date = `test date ${count}`;
 
 	try {
 		const doc = new Data({
@@ -51,6 +52,7 @@ app.post("/log", async (req, resp) => {
 		resp.status(300).json({ status: "Not OK" });
 		console.log(err);
 	}
+	count++;
 });
 
 mongoose
