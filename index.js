@@ -40,7 +40,7 @@ app.post("/log", async (req, resp) => {
 	let date = "test date";
 
 	try {
-		const doc = new Etudiant({
+		const doc = new Data({
 			Nom: firstName,
 			Prenom: lastName,
 			date: date,
