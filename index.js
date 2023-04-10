@@ -8,10 +8,19 @@ var app = express();
 app.use(bodyParser());
 app.use(cors());
 
+let check = false;
+
 app.post("/test", (req, res) => console.log(req.body));
 app.get("/testies", (req, res) => {
-	res.status(200);
-	res.json([{ piw: "piw" }, { piw: "piw" }]);
+	if (check) {
+		check = false;
+		res.status(200);
+		res.json([{ piw: "piw" }, { piw: "piw" }]);
+	} else {
+		check = true;
+		res.status(200);
+		res.json([{ piw: "piw" }, { piw: "piw" }]);
+	}
 });
 
 app.post("/esp", (req, res) => {
@@ -19,15 +28,15 @@ app.post("/esp", (req, res) => {
 	res.send("pitche loves you so much !!");
 });
 
-// mongoose
-// 	.connect(
-// 		"mongodb+srv://slimanirayene:0000@pitchecluster.qost1.mongodb.net/Ouedkniss?retryWrites=true&w=majority"
-// 	)
-// 	.then((db) => {
-// 		console.log("Database connected");
-// 	})
-// 	.catch((err) => {
-// 		console.log(err);
-// 	});
+mongoose
+	.connect(
+		"mongodb+srv://slimanirayene:0000@pitchecluster.qost1.mongodb.net/Ouedkniss?retryWrites=true&w=majority"
+	)
+	.then((db) => {
+		console.log("Database connected");
+	})
+	.catch((err) => {
+		console.log(err);
+	});
 
 app.listen(2000);
