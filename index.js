@@ -38,6 +38,7 @@ app.post("/esp", (req, res) => {
 });
 
 app.post("/log", async (req, resp) => {
+	let time = req.body.time;
 	let temperature = req.body.temp;
 	let turbidity = req.body.turb;
 	let salinity = req.body.sal;
@@ -58,7 +59,6 @@ app.post("/log", async (req, resp) => {
 		resp.status(300).json({ status: "Not OK" });
 		console.log(err);
 	}
-	count++;
 });
 
 mongoose
