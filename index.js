@@ -2,6 +2,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var cors = require("cors");
+const fs = require("fs");
 
 var app = express();
 
@@ -17,9 +18,56 @@ const IoTData = mongoose.model("data", {
 	image: Array,
 });
 
+app.post("/log", async (req, resp) => {
+	console.log("uploading .......");
+
+	const base64Data = req.body.image;
+	const imageName = "uploads/converted_image1.jpg";
+
+	// Remove the "data:image/jpeg;base64," prefix from the base64 data
+	const imageData = base64Data.replace(/^data:image\/jpeg;base64,/, "");
+
+	// Convert the base64 data to a buffer
+	const buffer = Buffer.from(imageData, "base64");
+
+	// Save the buffer as a JPG file
+	fs.writeFile(imageName, buffer, (err) => {
+		if (err) {
+			console.error(err);
+			resp.status(500).send("Error saving the image.");
+		} else {
+			let time = req.body.time;
+			let temperature = req.body.temp;
+			let turbidity = req.body.turb;
+			let salinity = req.body.sal;
+			let pH = req.body.ph;
+
+			const doc = new IoTData({
+				time: time,
+				temperature: temperature,
+				turbidity: turbidity,
+				salinity: salinity,
+				ph: pH,
+				image: imageName,
+			});
+
+			doc
+				.save()
+				.then(() => {
+					resp.status(200).json({ status: "OK" });
+				})
+				.catch((err) => {
+					resp.status(500).json({ status: "Not OK" });
+					console.log(err);
+				});
+		}
+	});
+});
+
+//My online testing get Api : https://vercel-test-gules-five.vercel.app/testies
+
 let check = false;
 
-app.post("/test", (req, res) => console.log(req.body));
 app.get("/testies", (req, res) => {
 	if (check) {
 		check = false;
@@ -29,35 +77,6 @@ app.get("/testies", (req, res) => {
 		check = true;
 		res.status(200);
 		res.json([{ piw: "diw" }, { piw: "diw" }]);
-	}
-});
-
-app.post("/esp", (req, res) => {
-	res.status(200);
-	res.send("pitche loves you so much !!");
-});
-
-app.post("/log", async (req, resp) => {
-	let time = req.body.time;
-	let temperature = req.body.temp;
-	let turbidity = req.body.turb;
-	let salinity = req.body.sal;
-	let pH = req.body.ph;
-
-	try {
-		const doc = new IoTData({
-			time: time,
-			temperature: temperature,
-			turbidity: turbidity,
-			salinity: salinity,
-			ph: pH,
-			// image: Array,
-		});
-		await doc.save();
-		resp.status(200).json({ status: "OK" });
-	} catch (err) {
-		resp.status(300).json({ status: "Not OK" });
-		console.log(err);
 	}
 });
 
