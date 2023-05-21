@@ -8,14 +8,16 @@ var app = express();
 app.use(bodyParser());
 app.use(cors());
 
-const Data = mongoose.model("data", {
-	Nom: String,
-	Prenom: String,
-	date: String,
+const IoTData = mongoose.model("data", {
+	time: String,
+	temperature: String,
+	turbidity: String,
+	salinity: String,
+	ph: String,
+	image: Array,
 });
 
 let check = false;
-let count = 0;
 
 app.post("/test", (req, res) => console.log(req.body));
 app.get("/testies", (req, res) => {
@@ -36,15 +38,19 @@ app.post("/esp", (req, res) => {
 });
 
 app.post("/log", async (req, resp) => {
-	let firstName = `test name ${count}`;
-	let lastName = `test last name ${count}`;
-	let date = `test date ${count}`;
+	let temperature = req.body.temp;
+	let turbidity = req.body.turb;
+	let salinity = req.body.sal;
+	let pH = req.body.ph;
 
 	try {
-		const doc = new Data({
-			Nom: firstName,
-			Prenom: lastName,
-			date: date,
+		const doc = new IoTData({
+			time: time,
+			temperature: temperature,
+			turbidity: turbidity,
+			salinity: salinity,
+			ph: pH,
+			// image: Array,
 		});
 		await doc.save();
 		resp.status(200).json({ status: "OK" });
@@ -57,7 +63,7 @@ app.post("/log", async (req, resp) => {
 
 mongoose
 	.connect(
-		"mongodb+srv://slimanirayene:0000@pitchecluster.qost1.mongodb.net/Ouedkniss?retryWrites=true&w=majority"
+		"mongodb+srv://slimanirayene:0000@pitchecluster.qost1.mongodb.net/test?retryWrites=true&w=majority"
 	)
 	.then((db) => {
 		console.log("Database connected");
