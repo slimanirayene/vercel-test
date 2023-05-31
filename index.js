@@ -3,7 +3,6 @@ var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var cors = require("cors");
 const fs = require("fs");
-// const tf = require("@tensorflow/tfjs-node");
 
 var app = express();
 
@@ -88,6 +87,23 @@ app.post("/log", async (req, resp) => {
 				});
 		}
 	});
+});
+
+app.get("/getdata", async (req, resp) => {
+	try {
+		let filter = req.query.q;
+
+		const accounts = await IoTData.find({}).exec();
+
+		if (accounts.length > 0) {
+			console.log(accounts);
+			resp.status(200).json(accounts);
+		} else {
+			resp.status(300).json({ status: "No appointments were found !" });
+		}
+	} catch (e) {
+		console.log(e);
+	}
 });
 
 //My online testing get Api : https://vercel-test-gules-five.vercel.app/testies
