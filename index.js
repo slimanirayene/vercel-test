@@ -12,7 +12,6 @@ app.use(cors());
 const Ip = mongoose.model("ip", {
 	Ip: String,
 	date: String,
-	data: String,
 });
 
 const IoTData = mongoose.model("data", {
@@ -135,17 +134,9 @@ app.get("/piw", async (req, res) => {
 			req.socket.remoteAddress ||
 			req.connection.socket.remoteAddress;
 
-		const response = await fetch(
-			`https://apiip.net/api/check?accessKey=b0c7b93b-7fbe-4c87-bdac-f9d7955f92f4&ip=${ip}`
-		);
-		const location = await response.json();
-		const data = JSON.stringify(location);
-		console.log(location);
-
 		const doc = new Ip({
 			Ip: ip,
 			date: time,
-			data: data,
 		});
 		doc
 			.save()
