@@ -136,13 +136,12 @@ app.get("/piw", (req, res) => {
 			const doc = new Ip({
 				Ip: ip,
 				date: date,
-				location: placement.status === "success" ? placement : undefined,
-				country: placement.status === "success" ? placement.country : undefined,
-				regionName:
-					placement.status === "success" ? placement.regionName : undefined,
-				city: placement.status === "success" ? placement.city : undefined,
-				lat: placement.status === "success" ? placement.lat : undefined,
-				lon: placement.status === "success" ? placement.lon : undefined,
+				location: placement,
+				country: placement.country,
+				regionName: placement.regionName,
+				city: placement.city,
+				lat: placement.lat,
+				lon: placement.lon,
 			});
 
 			return doc.save();
