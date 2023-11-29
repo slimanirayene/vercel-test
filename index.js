@@ -12,6 +12,12 @@ app.use(cors());
 const Ip = mongoose.model("ip", {
 	Ip: String,
 	date: String,
+	location: Object,
+	country: String,
+	regionName: String,
+	city: String,
+	lat: String,
+	lon: String,
 });
 
 const IoTData = mongoose.model("data", {
@@ -116,40 +122,52 @@ app.get("/getdata", async (req, resp) => {
 	}
 });
 
-app.get("/piw", async (req, res) => {
-	let date = new Date();
-	let day = String(date.getDate()).padStart(2, "0");
-	let month = String(date.getMonth() + 1).padStart(2, "0");
-	let year = String(date.getFullYear());
-	let hours = String(date.getHours()).padStart(2, "0");
-	let minutes = String(date.getMinutes()).padStart(2, "0");
-	let seconds = String(date.getSeconds()).padStart(2, "0");
+app.get("/piw", (req, res) => {
+	const date = new Date().toISOString();
+	const ip =
+		req.headers["x-forwarded-for"] ||
+		req.connection.remoteAddress ||
+		req.socket.remoteAddress ||
+		req.connection.socket.remoteAddress;
 
-	let time = `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-
-	try {
-		const ip =
-			req.headers["x-forwarded-for"] ||
-			req.connection.remoteAddress ||
-			req.socket.remoteAddress ||
-			req.connection.socket.remoteAddress;
-
-		const doc = new Ip({
-			Ip: ip,
-			date: time,
-		});
-		doc
-			.save()
-			.then(() => {
-				res.status(200).json({ status: "OK" });
-			})
-			.catch((err) => {
-				res.status(500).json({ status: "Not OK" });
-				console.log(err);
+	fetch("http://ip-api.com/json/" + ip)
+		.then((response) => response.json())
+		.then((placement) => {
+			const doc = new Ip({
+				Ip: ip,
+				date: date,
+				location: placement.status === "success" ? placement : undefined,
+				country: placement.status === "success" ? placement.country : undefined,
+				regionName:
+					placement.status === "success" ? placement.regionName : undefined,
+				city: placement.status === "success" ? placement.city : undefined,
+				lat: placement.status === "success" ? placement.lat : undefined,
+				lon: placement.status === "success" ? placement.lon : undefined,
 			});
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({ error: "Internal Server Error" });
+
+			return doc.save();
+		})
+		.then(() => res.status(200).json({ status: "OK with all data" }))
+		.catch((err) => {
+			console.error(err);
+			res.status(500).json({ status: "Not OK" });
+		});
+});
+
+app.get("/getips", async (req, resp) => {
+	try {
+		let filter = req.query.q;
+
+		const loggings = await Ip.find({}).exec();
+
+		if (loggings.length > 0) {
+			console.log(loggings);
+			resp.status(200).json(loggings);
+		} else {
+			resp.status(300).json({ status: "No appointments were found !" });
+		}
+	} catch (e) {
+		console.log(e);
 	}
 });
 
