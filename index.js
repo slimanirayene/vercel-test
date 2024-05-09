@@ -39,6 +39,7 @@ const ClientData = mongoose.model("client", {
   wilaya: String,
   commune: String,
   model: String,
+  telephone: String,
   time: String,
 });
 
@@ -53,6 +54,7 @@ app.post("/logclient", async (req, resp) => {
   let wilaya = req.body.wilaya;
   let commune = req.body.commune;
   let model = req.body.couleur;
+  let telephone = req.body.telephone;
 
   let date = new Date();
   let day = String(date.getDate()).padStart(2, "0");
@@ -68,6 +70,7 @@ app.post("/logclient", async (req, resp) => {
     fullname: fullname,
     wilaya: wilaya,
     commune: commune,
+    telephone: telephone,
     model: model,
     time: time,
   });
